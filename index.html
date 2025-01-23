@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tree Animation with Admin Reset</title>
+  <link rel="stylesheet" href="tree.css">
+</head>
+<body>
+  <div class="tree-container">
+    <div class="tree">
+      <div class="trunk"></div>
+      <div class="leaves"></div>
+      <div class="leaves small"></div>
+    </div>
+  </div>
+  <div class="timer" id="timer">Time elapsed: 0 seconds</div>
+
+  <!-- Ввод кода администратора -->
+  <input type="password" id="admin-code" placeholder="Enter admin code" class="admin-input">
+  <button id="check-code" class="admin-button">Verify</button>
+
+  <!-- Кнопка сброса (по умолчанию скрыта) -->
+  <button id="reset-timer" class="reset-button" style="display: none;">Reset Timer</button>
+
+  <script>
+    // Таймер: сохраняет время в localStorage
+    function updateTimer() {
+      const startTime = parseInt(localStorage.getItem('startTime'), 10) || Date.now();
+      localStorage.setItem('startTime', startTime); // Сохраняем время старта, если его нет
+      const elapsed = Math.floor((Date.now() - startTime) / 1000); // Рассчитываем прошедшее время
+      document.getElementById('timer').textContent = `Time elapsed: ${elapsed} seconds`;
+    }
+
+    // Сброс таймера
+    function resetTimer() {
+      localStorage.removeItem('startTime'); // Удаляем сохранённое время
+      updateTimer(); // Перезапускаем таймер
+    }
+
+    // Проверка кода администратора
+    function checkAdminCode() {
+      const adminCode = document.getElementById('admin-code').value; // Получаем введённый код
+      if (adminCode === "56") { // Если код верный
+        document.getElementById('reset-timer').style.display = "block"; // Показываем кнопку сброса
+        alert("Access granted! You can now reset the timer.");
+      } else {
+        alert("Invalid admin code. Access denied.");
+      }
+    }
+
+    // Привязываем события
+    document.getElementById('check-code').addEventListener('click', checkAdminCode);
+    document.getElementById('reset-timer').addEventListener('click', resetTimer);
+
+    // Обновляем таймер каждую секунду
+    setInterval(updateTimer, 1000);
+    updateTimer(); // Первое обновление сразу после загрузки страницы
+  </script>
+</body>
+</html>
